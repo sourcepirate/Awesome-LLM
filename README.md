@@ -617,6 +617,16 @@ This is an active repository and your contributions are always welcome!
 
 I will keep some pull requests open if I'm not sure if they are awesome for LLM, you could vote for them by adding 👍 to them.
 
+### Download papers locally
+
+To download the paper links in this repository into local category folders, run:
+
+```bash
+python /tmp/workspace/sourcepirate/Awesome-LLM/scripts/download_papers.py
+```
+
+By default this writes files under `/tmp/workspace/sourcepirate/Awesome-LLM/papers/`, with one folder per paper category plus `milestone_papers/`. Use `--dry-run` to preview, `--category <name>` to limit categories, and `--output-dir <path>` to write somewhere else.
+
 ---
 
 If you have any question about this opinionated list, do not hesitate to contact me chengxin1998@stu.pku.edu.cn.
