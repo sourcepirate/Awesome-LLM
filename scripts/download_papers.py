@@ -85,7 +85,7 @@ def parse_args() -> argparse.Namespace:
 
 def sanitize_name(value: str) -> str:
     value = unescape(value).strip()
-    value = re.sub(r"[\\/:*?\"<>|]+", "-", value)
+    value = re.sub(r"[\\/:*?\"<>\|]+", "-", value)
     value = re.sub(r"\s+", " ", value)
     return value.strip(" .") or "untitled"
 
@@ -121,7 +121,7 @@ def parse_milestone_papers(readme_path: Path, repo_root: Path) -> list[Paper]:
         if not in_section or not stripped.startswith("|"):
             continue
         cells = [cell.strip() for cell in stripped.strip("|").split("|")]
-        if len(cells) < 4 or cells[0] in {"Date", ":-------:"}:
+        if len(cells) < 4 or cells[0] == "Date" or re.fullmatch(r"[:\-]+", cells[0]):
             continue
         link_match = re.search(r"\[(.+?)\]\((https?://[^)]+)\)", cells[-1])
         if not link_match:
@@ -360,7 +360,7 @@ def main() -> int:
                 }
             )
 
-        if args.pause > 0:
+        if args.pause > 0 and index < len(papers):
             time.sleep(args.pause)
 
     output_dir.mkdir(parents=True, exist_ok=True)
