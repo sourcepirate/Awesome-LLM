@@ -107,7 +107,7 @@ def extract_title_from_line(line: str) -> str | None:
     return line or None
 
 
-def parse_milestone_papers(readme_path: Path) -> list[Paper]:
+def parse_milestone_papers(readme_path: Path, repo_root: Path) -> list[Paper]:
     papers: list[Paper] = []
     in_section = False
 
@@ -131,7 +131,7 @@ def parse_milestone_papers(readme_path: Path) -> list[Paper]:
                 category="milestone_papers",
                 title=link_match.group(1).strip(),
                 url=link_match.group(2).strip(),
-                source=str(readme_path.relative_to(readme_path.parent.parent if readme_path.parent.name == "" else readme_path.parent)),
+                source=str(readme_path.relative_to(repo_root)),
             )
         )
 
@@ -165,7 +165,7 @@ def collect_papers(repo_root: Path) -> list[Paper]:
     readme_path = repo_root / README_PATH
     paper_list_dir = repo_root / PAPER_LIST_DIR
 
-    papers = parse_milestone_papers(readme_path)
+    papers = parse_milestone_papers(readme_path, repo_root)
     for category_file in sorted(paper_list_dir.glob("*.md")):
         papers.extend(parse_category_papers(category_file, repo_root))
 
@@ -281,20 +281,6 @@ def download_file(url: str, destination: Path, timeout: int) -> None:
     temp_path.replace(destination)
 
 
-def ensure_unique_path(path: Path) -> Path:
-    if not path.exists():
-        return path
-
-    stem = path.stem
-    suffix = path.suffix
-    counter = 2
-    while True:
-        candidate = path.with_name(f"{stem} ({counter}){suffix}")
-        if not candidate.exists():
-            return candidate
-        counter += 1
-
-
 def main() -> int:
     args = parse_args()
     repo_root = args.repo_root.resolve()
@@ -340,8 +326,6 @@ def main() -> int:
 
             if destination.exists() and args.overwrite:
                 destination.unlink()
-            elif args.overwrite:
-                destination = ensure_unique_path(destination)
 
             print(f"[{index}/{len(papers)}] {'plan' if args.dry_run else 'download'} {paper.category}: {paper.title}")
             if args.dry_run:
