@@ -249,10 +249,9 @@ def resolve_download_url(url: str, timeout: int) -> str:
                 if extracted:
                     return extracted
     except (HTTPError, URLError):
-        if candidate != url:
-            pass
-        else:
+        if candidate == url:
             raise
+        # If the normalized direct-PDF form fails, fall back to the original URL.
 
     with urlopen(build_request(url), timeout=timeout) as response:
         content_type = response.headers.get_content_type()
@@ -349,7 +348,7 @@ def main() -> int:
                     "path": str(destination),
                 }
             )
-        except Exception as exc:  # noqa: BLE001
+        except (HTTPError, URLError, ValueError, OSError) as exc:
             print(f"[{index}/{len(papers)}] fail {paper.category}: {paper.title} ({exc})", file=sys.stderr)
             report["failed"].append(
                 {

@@ -622,10 +622,10 @@ I will keep some pull requests open if I'm not sure if they are awesome for LLM,
 To download the paper links in this repository into local category folders, run:
 
 ```bash
-python /tmp/workspace/sourcepirate/Awesome-LLM/scripts/download_papers.py
+python scripts/download_papers.py
 ```
 
-By default this writes files under `/tmp/workspace/sourcepirate/Awesome-LLM/papers/`, with one folder per paper category plus `milestone_papers/`. Use `--dry-run` to preview, `--category <name>` to limit categories, and `--output-dir <path>` to write somewhere else.
+By default this writes files under `<repo-root>/papers/`, with one folder per paper category plus `milestone_papers/`. Use `--dry-run` to preview, `--category <name>` to limit categories, and `--output-dir <path>` to write somewhere else.
 
 ---
 
